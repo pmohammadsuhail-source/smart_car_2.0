@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#05070b">
-<title>SMART CAR 2.0</title>
+<title>SAHAYAK ROVER • Control & Live Monitor</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -635,6 +635,23 @@ button{
   animation-delay:.26s;
 }
 
+
+/* ===== LIVE CAMERA MONITOR ===== */
+.camera-monitor{display:grid;grid-template-columns:1.35fr .65fr;gap:14px}
+.camera-view{position:relative;min-height:320px;background:#020409;border:1px solid var(--border-soft);border-radius:15px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.camera-view img{width:100%;height:auto;min-height:320px;object-fit:contain;display:none;background:#000}
+.camera-placeholder{text-align:center;color:var(--muted);padding:30px}
+.camera-placeholder .camera-icon{font-size:46px;margin-bottom:10px}
+.camera-side{display:flex;flex-direction:column;gap:10px}
+.camera-url{width:100%;border:1px solid var(--border);border-radius:11px;padding:11px 12px;background:rgba(255,255,255,.03);color:var(--text);outline:none;font-family:"JetBrains Mono",monospace;font-size:11px}
+.camera-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.camera-status{border:1px solid var(--border-soft);border-radius:13px;background:rgba(255,255,255,.02);padding:13px}
+.camera-status .label{color:var(--muted-dim);font-size:9.5px;text-transform:uppercase;letter-spacing:1px;font-family:"JetBrains Mono",monospace}
+.camera-status .value{margin-top:7px;font-family:"Space Grotesk",sans-serif;font-size:14px;font-weight:600}
+.camera-live-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--red);margin-right:7px}
+.camera-live-dot.on{background:var(--green);box-shadow:0 0 10px var(--green-glow)}
+@media(max-width:850px){.camera-monitor{grid-template-columns:1fr}.camera-view,.camera-view img{min-height:240px}}
+
 /* ================= MOBILE ================= */
 
 @media(max-width:850px){
@@ -768,7 +785,7 @@ button{
 
     <div>
       <h1>SMART CAR 2.0</h1>
-      <p>Intelligent Robotic Vehicle Control System</p>
+      <p>Intelligent Robotic Vehicle Control & Live Monitoring System</p>
     </div>
 
   </div>
@@ -898,6 +915,21 @@ button{
 
       <span class="mode-desc">
         Prevent falling
+      </span>
+
+    </button>
+    
+    <!-- ADDED: Smart Auto Mode -->
+    <button class="mode" data-cmd="5">
+
+      <div class="mode-icon">🧠</div>
+
+      <span class="mode-name">
+        Smart Auto
+      </span>
+
+      <span class="mode-desc">
+        Fully autonomous
       </span>
 
     </button>
@@ -1051,6 +1083,113 @@ button{
 </section>
 
 
+<!-- LIVE TELEMETRY -->
+
+<section class="card" style="margin-top:18px">
+
+  <div class="card-title">
+    <h2>Live Telemetry</h2>
+    <span>ARDUINO DATA</span>
+  </div>
+
+  <div class="stats">
+
+    <div class="stat">
+      <div class="stat-label">Mode</div>
+      <div class="stat-value" id="monitorMode">--</div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-label">Ultrasonic</div>
+      <div class="stat-value" id="monitorDistance">-- cm</div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-label">Battery</div>
+      <div class="stat-value" id="batteryValue">-- V</div>
+    </div>
+
+  </div>
+
+  <div class="stats">
+
+    <div class="stat">
+      <div class="stat-label">Line Left</div>
+      <div class="stat-value" id="lineLeft">--</div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-label">Line Middle</div>
+      <div class="stat-value" id="lineMiddle">--</div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-label">Line Right</div>
+      <div class="stat-value" id="lineRight">--</div>
+    </div>
+
+  </div>
+
+  <div class="stats">
+
+    <div class="stat">
+      <div class="stat-label">Edge Left</div>
+      <div class="stat-value" id="edgeLeft">--</div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-label">Edge Right</div>
+      <div class="stat-value" id="edgeRight">--</div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-label">Data Link</div>
+      <div class="stat-value" id="dataLink">WAITING</div>
+    </div>
+
+  </div>
+
+</section>
+
+
+
+<!-- LIVE CAMERA MONITOR -->
+<section class="card" style="margin-top:18px">
+  <div class="card-title">
+    <h2>Live Camera Monitor</h2>
+    <span>ESP32-CAM</span>
+  </div>
+  <div class="camera-monitor">
+    <div class="camera-view">
+      <img id="cameraStream" alt="ESP32-CAM live stream">
+      <div id="cameraPlaceholder" class="camera-placeholder">
+        <div class="camera-icon">📷</div>
+        <strong>CAMERA READY</strong>
+        <div style="margin-top:7px;font-size:11px">
+          Press <b>Start Camera</b> to open the ESP32-CAM live stream.
+        </div>
+      </div>
+    </div>
+    <div class="camera-side">
+      <input id="cameraUrl" class="camera-url" type="text"
+        value="http://192.168.31.230/stream"
+        placeholder="http://ESP32-CAM-IP/stream"
+        aria-label="ESP32-CAM live stream URL">
+      <div class="camera-actions">
+        <button class="btn connect" id="cameraStartBtn" type="button">▶ Start Camera</button>
+        <button class="btn disconnect" id="cameraStopBtn" type="button">■ Stop Camera</button>
+      </div>
+      <div class="camera-status"><div class="label">Camera Status</div><div class="value"><span id="cameraLiveDot" class="camera-live-dot"></span><span id="cameraStatus">OFFLINE</span></div></div>
+      <div class="camera-status"><div class="label">Stream</div><div class="value">MJPEG / HTTP</div></div>
+      <div class="camera-status"><div class="label">Resolution</div><div class="value">QVGA 320×240</div></div>
+      <div class="camera-status"><div class="label">Source</div><div class="value" id="cameraSource">192.168.31.230:81</div></div>
+      <p style="color:var(--muted);font-size:10.5px;line-height:1.5;margin:2px 0 0">
+        Direct ESP32-CAM stream. Keep only one camera client open.
+      </p>
+    </div>
+  </div>
+</section>
+
 <!-- ACTIVITY -->
 
 <section class="card" style="margin-top:18px">
@@ -1111,7 +1250,7 @@ button{
 
 <div class="footer">
 
-  <span>SMART CAR 2.0 • Robotics Control Interface</span>
+  <span>SAHAYAK ROVER • Robotics Control & Live Monitoring</span>
 
   <span>
     HC-08 BLE • FFE0 / FFE1
@@ -1141,6 +1280,7 @@ const CHARACTERISTIC_UUID =
 
 let device = null;
 let characteristic = null;
+let receiveBuffer = ""; 
 
 
 /* =========================================
@@ -1275,6 +1415,27 @@ async function connectBluetooth(){
 
     log("FFE1 characteristic found.");
 
+    try{
+
+      await characteristic.startNotifications();
+
+      characteristic.addEventListener(
+        "characteristicvaluechanged",
+        handleRoverData
+      );
+
+      log("Rover data notifications enabled.");
+
+    }
+    catch(error){
+
+      log(
+        "Warning: Rover notifications unavailable: " +
+        error.message
+      );
+
+    }
+
 
     status(
       "HC-08 Connected",
@@ -1316,6 +1477,19 @@ async function connectBluetooth(){
 
 function handleDisconnect(){
 
+  if(characteristic){
+
+    try{
+      characteristic.removeEventListener(
+        "characteristicvaluechanged",
+        handleRoverData
+      );
+    }
+    catch(error){}
+  }
+
+  receiveBuffer = "";
+
   characteristic = null;
 
   status(
@@ -1327,6 +1501,155 @@ function handleDisconnect(){
     "No HC-08 connected";
 
   log("HC-08 disconnected.");
+}
+
+
+/* =========================================
+   ROVER DATA RECEIVE
+   Expected Arduino format:
+   MODE:LINE,DIST:35,LINE:010,EDGE:00
+   BAT:7.8
+   ========================================= */
+
+function handleRoverData(event){
+
+  const value =
+    new TextDecoder().decode(event.target.value);
+
+  receiveBuffer += value;
+
+  const lines =
+    receiveBuffer.split(/\r?\n/);
+
+  receiveBuffer =
+    lines.pop() || "";
+
+  lines.forEach(line => {
+
+    line = line.trim();
+
+    if(!line){
+      return;
+    }
+
+    log("Rover: " + line);
+
+    parseRoverStatus(line);
+    parseBatteryTelemetry(line);
+
+  });
+}
+
+
+/* =========================================
+   ROVER STATUS PARSER
+   ========================================= */
+
+function parseRoverStatus(line){
+
+  if(!line.startsWith("MODE:")){
+    return;
+  }
+
+  const parts =
+    line.split(",");
+
+  const data = {};
+
+  parts.forEach(part => {
+
+    const separator =
+      part.indexOf(":");
+
+    if(separator === -1){
+      return;
+    }
+
+    const key =
+      part.substring(0, separator).trim();
+
+    const value =
+      part.substring(separator + 1).trim();
+
+    data[key] = value;
+
+  });
+
+
+  if(data.MODE){
+
+    $("monitorMode").textContent =
+      data.MODE;
+
+    $("modeStat").textContent =
+      data.MODE;
+  }
+
+
+  if(data.DIST){
+
+    $("monitorDistance").textContent =
+      data.DIST + " cm";
+  }
+
+
+  if(data.LINE && data.LINE.length >= 3){
+
+    $("lineLeft").textContent =
+      data.LINE[0] === "1"
+        ? "BLACK"
+        : "WHITE";
+
+    $("lineMiddle").textContent =
+      data.LINE[1] === "1"
+        ? "BLACK"
+        : "WHITE";
+
+    $("lineRight").textContent =
+      data.LINE[2] === "1"
+        ? "BLACK"
+        : "WHITE";
+  }
+
+
+  if(data.EDGE && data.EDGE.length >= 2){
+
+    $("edgeLeft").textContent =
+      data.EDGE[0] === "1"
+        ? "EDGE"
+        : "SAFE";
+
+    $("edgeRight").textContent =
+      data.EDGE[1] === "1"
+        ? "EDGE"
+        : "SAFE";
+  }
+
+
+  $("dataLink").textContent =
+    "RECEIVING";
+}
+
+
+/* =========================================
+   BATTERY TELEMETRY
+   Expected Arduino format:
+
+   BAT:7.8
+   ========================================= */
+
+function parseBatteryTelemetry(line){
+
+  if(!line.startsWith("BAT:")){
+    return;
+  }
+
+  const voltage =
+    line.substring(4).trim();
+
+  $("batteryValue").textContent =
+    voltage + " V";
+
 }
 
 
@@ -1423,6 +1746,19 @@ async function disconnectBluetooth(){
   }
 
 
+  if(characteristic){
+
+    try{
+      characteristic.removeEventListener(
+        "characteristicvaluechanged",
+        handleRoverData
+      );
+    }
+    catch(error){}
+  }
+
+  receiveBuffer = "";
+
   characteristic = null;
 
   device = null;
@@ -1485,14 +1821,15 @@ document
 
       button.classList.add("active");
 
-
+      // ADDED: "5":"SMART AUTO" mapping
       const modeNames = {
 
         "0":"REMOTE",
         "1":"LINE TRACKING",
         "2":"OBSTACLE AVOIDANCE",
         "3":"HUMAN FOLLOW",
-        "4":"EDGE DETECTION"
+        "4":"EDGE DETECTION",
+        "5":"SMART AUTO"
 
       };
 
@@ -1556,6 +1893,54 @@ document.onkeydown = async event => {
 };
 
 
+
+/* ===== LIVE CAMERA MONITOR ===== */
+function setCameraStatus(text, live){
+  $("cameraStatus").textContent = text;
+  $("cameraLiveDot").classList.toggle("on", !!live);
+}
+function updateCameraSource(url){
+  try{
+    const u = new URL(url);
+    $("cameraSource").textContent = u.hostname + (u.port ? ":" + u.port : "");
+  }catch(e){
+    $("cameraSource").textContent = "INVALID URL";
+  }
+}
+function startCamera(){
+  const url = $("cameraUrl").value.trim();
+  if(!url){ log("Camera: stream URL is empty."); return; }
+  const img = $("cameraStream");
+  const placeholder = $("cameraPlaceholder");
+  updateCameraSource(url);
+  setCameraStatus("CONNECTING", false);
+  log("Camera: connecting to " + url);
+  img.onload = function(){
+    img.style.display = "block";
+    placeholder.style.display = "none";
+    setCameraStatus("LIVE", true);
+    log("Camera: live stream connected.");
+  };
+  img.onerror = function(){
+    img.style.display = "none";
+    placeholder.style.display = "block";
+    setCameraStatus("OFFLINE", false);
+    log("Camera: stream connection failed.");
+  };
+  img.src = url + (url.includes("?") ? "&" : "?") + "t=" + Date.now();
+}
+function stopCamera(){
+  const img = $("cameraStream");
+  img.onload = null; img.onerror = null;
+  img.removeAttribute("src");
+  img.style.display = "none";
+  $("cameraPlaceholder").style.display = "block";
+  setCameraStatus("OFFLINE", false);
+  log("Camera: stream stopped.");
+}
+$("cameraStartBtn").onclick = startCamera;
+$("cameraStopBtn").onclick = stopCamera;
+
 /* =========================================
    INITIAL LOG
    ========================================= */
@@ -1574,6 +1959,14 @@ log(
 
 log(
   "System ready."
+);
+
+log(
+  "Live Telemetry ready."
+);
+
+log(
+  "Waiting for Arduino telemetry..."
 );
 
 </script>
